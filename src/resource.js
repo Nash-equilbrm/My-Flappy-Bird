@@ -27,6 +27,7 @@ var res = {
     sprites_pipe_red_png : "res/sprites/pipe-red.png",
     sprites_message_png : "res/sprites/message.png",
     sprites_gameover_png : "res/sprites/gameover.png",
+    sprites_replay_button_png : "res/sprites/replay-button.png"
 
 
 };

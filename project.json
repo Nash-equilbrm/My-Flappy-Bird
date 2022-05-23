@@ -17,6 +17,10 @@
         "src/MenuLayer.js",
         "src/GameLayer.js",
         "src/Bird.js",
-        "src/Obstacle.js"
+        "src/Obstacle.js",
+        "src/GameManager.js",
+        "src/ScoreBoard.js",
+        "src/GameOverLayer.js",
+        "src/Base.js"
     ]
 }

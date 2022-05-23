@@ -1,19 +1,7 @@
-STATE_PLAYING = 1
-STATE_GAMEOVER = 0
-
-
 var GameLayer = cc.Layer.extend({
-    state:STATE_PLAYING,
-    pipeManager:null,
-    bird:null,
-    obstacles:[],
-    activeObstacles:[],
-    obstacleCount:10,
-    timeTick:0,
-    obstacleReappearTime:2,
-    speed:100,
-    a:null,
-    addMoreObstacle:false,
+    _gameManager:null,
+    speed:150,
+
 
     ctor:function () {
         this._super();
@@ -26,8 +14,13 @@ var GameLayer = cc.Layer.extend({
         var mainscene = ccs.load(res.MainScene_json);
         this.addChild(mainscene.node);
 
-        this.bird = new Bird();
-        this.addChild(this.bird);
+
+
+        this._gameManager = new GameManager(this.speed);
+        this.addChild(this._gameManager);
+        this._gameManager.addObjectToScene();
+
+
 
 
 
@@ -36,36 +29,27 @@ var GameLayer = cc.Layer.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function (touch, event) {
-                self.bird.jump();
+                if(self._gameManager.getGameState() == STATE_PLAYING){
+                    self._gameManager.jump();
+                }
+                else if(self._gameManager.getGameState() == STATE_GAMEOVER){
+                    self.onGameOver();
+                }
                 return true;
             }
         }, this);
 
+        this._gameManager.setActive(true);
+        },
 
-        this.scheduleUpdate();
-    },
 
 
-    update:function (dt){
-        this.timeTick += dt;
-        if(this.timeTick>=0 && this.timeTick<1){
-            if(this.addMoreObstacle){
-                var newObstacle = new Obstacle();
-                this.addChild(newObstacle);
-                this.obstacles.push(newObstacle);
-                this.addMoreObstacle = false;
-            }
+    onGameOver:function (){
+        var gameScene = new cc.Scene();
 
-        }
-        if(this.timeTick > this.obstacleReappearTime && this.obstacles.length <= this.obstacleCount){
-            this.timeTick = 0;
-            this.addMoreObstacle = true;
-        }
-        for (let i=0;i<this.obstacles.length;++i){
-            var curPosition = this.obstacles[i].getPosition().x;
-            this.obstacles[i].setPosition(curPosition-dt*this.speed,0);
-        }
+        gameScene.addChild(new GameOverLayer(this._gameManager.getCurrentScore()));
 
+        cc.director.runScene(new cc.TransitionFade(0.5, gameScene));
     }
 
 });
